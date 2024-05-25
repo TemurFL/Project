@@ -1,21 +1,19 @@
 <?php
 declare(strict_types=1);
-namespace App\Controllers\Classes;
+namespace App\Helpers;
 
 class Date
 {
-    private object $date;
+    private \DateTime $date;
     private function errorOutput() : never {
         throw new \InvalidArgumentException('Указано не верное значение');
     }
-    public function __construct($strDate = NULL) {
-        date_default_timezone_set('Asia/Aqtobe');
-        if($strDate === NULL || $strDate = '') {
+    public function __construct(string $strDate = NULL) {
+        if($strDate === NULL || $strDate === '') {
             $this->date = new \DateTime();
             return;
         }
-        $timestamp = strtotime($strDate);
-        if($timestamp !== FALSE) {
+        if(strtotime($strDate)) {
             $this->date = new \DateTime($strDate);
         } else {
             throw new \InvalidArgumentException('Укажите верный формат даты "YYYY-MM-DD"');
@@ -49,29 +47,41 @@ class Date
                 return $this->date->format('N');
         }
     }
-    public function addDay(int $value) : void {
+    public function getTimeStamp() : int {
+        return (int) $this->date->format('U');
+    }
+    public function getDateTime() : \DateTime {
+        return $this->date;
+    }
+    public function addDay(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->add(new \DateInterval('P'.$value.'D'));
+        return $this->format('Y-m-d');
     }
-    public function subDay(int $value) : void {
+    public function subDay(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->sub(new \DateInterval('P'.$value.'D'));
+        return $this->format('Y-m-d');
     }
-    public function addMonth(int $value) : void {
+    public function addMonth(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->add(new \DateInterval('P'.$value.'M'));
+        return $this->format('Y-m-d');
     }
-    public function sumMonth(int $value) : void {
+    public function sumMonth(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->sub(new \DateInterval('P'.$value.'M'));
+        return $this->format('Y-m-d');
     }
-    public function addYear(int $value) : void {
+    public function addYear(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->add(new \DateInterval('P'.$value.'Y'));
+        return $this->format('Y-m-d');
     }
-    public function subYear(int $value) : void {
+    public function subYear(int $value) : string {
         if($value <= 0) $this->errorOutput();
         $this->date->sub(new \DateInterval('P'.$value.'Y'));
+        return $this->format('Y-m-d');
     }
     public function format($format) : string {
         return $this->date->format($format);
